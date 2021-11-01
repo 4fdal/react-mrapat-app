@@ -37,7 +37,12 @@ export default class HistoryEventScreen extends React.Component {
           variant="rounded"
           placeholder="Search"
           InputLeftElement={
-            <Icon size={24} style={{marginLeft: 10}} name="search" />
+            <Icon
+              color={colorPrimary}
+              size={24}
+              style={{marginLeft: 10}}
+              name="search"
+            />
           }
           onChangeText={search => this.setState({search})}
         />

@@ -1,6 +1,7 @@
 import {FlatList, Input, Text, Toast, View} from 'native-base';
 import React from 'react';
 import {
+  ActivityIndicator,
   BackHandler,
   Dimensions,
   Modal,
@@ -21,6 +22,8 @@ import {Banner} from '../../requests/banner';
 import {Event} from '../../storage/event';
 import ImgDataNotFound from '../../assets/images/data-not-found.png';
 import ImageViewer from 'react-native-image-zoom-viewer';
+import {Authenticate} from '../../storage/authenticate';
+import {Login} from '../../requests/login';
 
 export default class HomeListEvent extends React.Component {
   state = {
@@ -42,7 +45,7 @@ export default class HomeListEvent extends React.Component {
           <TouchableOpacity
             onPress={() => this.props.navigation.navigate('HistoryEventScreen')}
             style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
-            <Icon name="time" size={24} />
+            <Icon color={colorPrimary} name="time" size={24} />
             <Text ml={1}>History</Text>
           </TouchableOpacity>
         </View>
@@ -54,7 +57,12 @@ export default class HomeListEvent extends React.Component {
           variant="rounded"
           placeholder="Search"
           InputLeftElement={
-            <Icon size={24} style={{marginLeft: 10}} name="search" />
+            <Icon
+              color={colorPrimary}
+              size={24}
+              style={{marginLeft: 10}}
+              name="search"
+            />
           }
           onChangeText={search => this.setState({search})}
         />
@@ -90,6 +98,11 @@ export default class HomeListEvent extends React.Component {
     this.navigationOption();
     this.getListEvent();
     this.getListBanner();
+    this.props.navigation.addListener('focus', () => {
+      this.navigationOption();
+      this.getListEvent();
+      this.getListBanner();
+    });
   };
   _renderItemCarousel = ({item: {gambar: uri, nama, informasi_gambar}}) => {
     return (
@@ -157,9 +170,45 @@ export default class HomeListEvent extends React.Component {
             inactiveDotScale={0.6}
           />
         </View>
-        <Text mx={3} fontSize={16} fontWeight="bold">
-          Jadwal Rapat
-        </Text>
+        <View
+          style={{
+            justifyContent: 'space-between',
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}>
+          <Text mx={3} fontSize={16} fontWeight="bold">
+            Jadwal Rapat
+          </Text>
+          <TouchableOpacity
+            onPress={async () => {
+              try {
+                let {nip, password} = await Authenticate.get();
+                await Login.make({nip, password});
+                this.getListEvent();
+              } catch (error) {
+                let message = error?.response?.data?.msg;
+                if (message) {
+                  if (message.length > 0) {
+                    Toast.show({
+                      title: 'Invalidate',
+                      status: 'error',
+                      description: message.join('\n'),
+                    });
+                  }
+                }
+              }
+            }}
+            style={{
+              marginRight: 20,
+              alignItems: 'center',
+              flexDirection: 'row',
+            }}>
+            <Icon name="refresh" color={colorPrimary} size={24} />
+            <Text fontWeight="light" color={colorPrimary}>
+              Refresh
+            </Text>
+          </TouchableOpacity>
+        </View>
         {events.length == 0 && (
           <View mt={10} style={{flexDirection: 'column', alignItems: 'center'}}>
             <Image source={ImgDataNotFound} width={250} />
