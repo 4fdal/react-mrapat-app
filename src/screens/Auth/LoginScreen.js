@@ -46,7 +46,7 @@ export default class LoginScreen extends React.Component {
           Toast.show({
             title: 'Invalidate',
             status: 'error',
-            description: message.join('\n'),
+            description: Array.isArray(message) ? message.join('\n') : message,
           });
         }
       }

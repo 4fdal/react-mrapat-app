@@ -99,7 +99,7 @@ export default class HistoryEventScreen extends React.Component {
                     event: item,
                   })
                 }
-                style={{marginTop: 5}}>
+                style={{marginTop: 5, marginHorizontal: 10}}>
                 <View style={{flexDirection: 'column'}}>
                   <View
                     style={{
@@ -109,6 +109,8 @@ export default class HistoryEventScreen extends React.Component {
                       justifyContent: 'space-between',
                       flexDirection: 'row',
                       alignItems: 'center',
+                      borderTopLeftRadius: 10,
+                      borderTopRightRadius: 10,
                     }}>
                     <Text style={{color: colorPrimary}}>{nama_raker}</Text>
                     <View

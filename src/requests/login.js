@@ -1,6 +1,7 @@
 import Axios from 'axios';
 import Info from 'react-native-device-info';
 import {Authenticate} from '../storage/authenticate';
+import {Profile} from '../storage/profile';
 import {URL_API_LOGIN} from './keys';
 
 export class Login {
@@ -24,8 +25,11 @@ export class Login {
       data: {data},
     } = this.response;
 
+    let {pegawai} = data;
+
     // sync with local storage
     await new Authenticate({data, nip, password, phoneKey}).store();
+    await new Profile(pegawai).store();
 
     this.data = data;
 

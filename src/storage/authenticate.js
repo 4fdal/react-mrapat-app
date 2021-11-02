@@ -20,4 +20,8 @@ export class Authenticate {
     let stringToObject = JSON.parse(await AsyncStorage.getItem(STORAGE_LOGIN));
     return new Authenticate(stringToObject);
   };
+
+  static logout = async () => {
+    return await AsyncStorage.removeItem(STORAGE_LOGIN);
+  };
 }

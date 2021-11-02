@@ -9,6 +9,7 @@ export class Event {
     let {
       data: {raker},
     } = await Authenticate.get();
+
     return new Event(raker);
   }
 
