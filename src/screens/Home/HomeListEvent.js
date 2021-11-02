@@ -83,7 +83,7 @@ export default class HomeListEvent extends React.Component {
       Toast.show({
         title: 'Invalidate',
         status: 'error',
-        description: error.getMessage(),
+        description: error.message,
       });
     }
   };
@@ -95,7 +95,7 @@ export default class HomeListEvent extends React.Component {
       Toast.show({
         title: 'Invalidate',
         status: 'error',
-        description: error.getMessage(),
+        description: error.message,
       });
     }
   };

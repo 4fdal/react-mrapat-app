@@ -33,15 +33,23 @@ export default class AbsentScreen extends Component {
 
       this.props.navigation.replace('HomeBottomNavigationRoute');
     } catch (error) {
-      let message = error?.response?.data?.err;
-      if (message) {
-        if (message.length > 0) {
-          Toast.show({
-            title: 'Invalidate',
-            status: 'error',
-            description: message.join('\n'),
-          });
+      if (error.response != undefined) {
+        let message = error?.response?.data?.err;
+        if (message) {
+          if (message.length > 0) {
+            Toast.show({
+              title: 'Invalidate',
+              status: 'error',
+              description: message.join('\n'),
+            });
+          }
         }
+      } else {
+        Toast.show({
+          title: 'Invalidate',
+          status: 'error',
+          description: error.message,
+        });
       }
       this.props.navigation.goBack();
     }

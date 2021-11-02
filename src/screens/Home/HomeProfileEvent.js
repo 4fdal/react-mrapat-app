@@ -82,7 +82,7 @@ export default class HomeProfileEvent extends React.Component {
       Toast.show({
         title: 'Invalidate',
         status: 'error',
-        description: error,
+        description: error.message,
       });
     }
   };
