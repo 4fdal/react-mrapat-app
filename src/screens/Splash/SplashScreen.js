@@ -4,9 +4,18 @@ import React from 'react';
 import {Dimensions} from 'react-native';
 import {Login} from '../../requests/login';
 import {Authenticate} from '../../storage/authenticate';
+import {STORAGE_HOST} from '../../storage/keys';
 
 export default class SplashScreen extends React.Component {
+  state = {};
+
   componentDidMount = async () => {
+    let host = await AsyncStorage.getItem(STORAGE_HOST);
+
+    if(!host){
+      return this.props.navigation.replace('HostScreen');
+    }
+
     try {
       let authenticate = await Authenticate.get();
 

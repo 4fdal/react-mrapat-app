@@ -1,6 +1,8 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Axios from 'axios';
 import Info from 'react-native-device-info';
 import {Authenticate} from '../storage/authenticate';
+import {STORAGE_HOST} from '../storage/keys';
 import {Profile} from '../storage/profile';
 import {URL_API_LOGIN} from './keys';
 
@@ -15,7 +17,9 @@ export class Login {
   static make = async ({nip, password}) => {
     let phoneKey = Info.getUniqueId();
 
-    this.response = await Axios.post(URL_API_LOGIN, {
+    let host = await AsyncStorage.getItem(STORAGE_HOST);
+
+    this.response = await Axios.post(host + URL_API_LOGIN, {
       nip,
       password,
       phone_key: phoneKey,

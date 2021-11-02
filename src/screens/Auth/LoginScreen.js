@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   Button,
   Center,
@@ -9,6 +10,7 @@ import {
 } from 'native-base';
 import React from 'react';
 import {Login} from '../../requests/login';
+import {STORAGE_HOST} from '../../storage/keys';
 
 export default class LoginScreen extends React.Component {
   constructor(props) {
@@ -40,15 +42,27 @@ export default class LoginScreen extends React.Component {
       let login = await Login.make({nip, password});
       this.props.navigation.replace('HomeBottomNavigationRoute');
     } catch (error) {
-      let message = error?.response?.data?.msg;
-      if (message) {
-        if (message.length > 0) {
-          Toast.show({
-            title: 'Invalidate',
-            status: 'error',
-            description: Array.isArray(message) ? message.join('\n') : message,
-          });
+      if (error.response != undefined) {
+        let message = error?.response?.data?.msg;
+        if (message) {
+          if (message.length > 0) {
+            Toast.show({
+              title: 'Invalidate',
+              status: 'error',
+              description: Array.isArray(message)
+                ? message.join('\n')
+                : message,
+            });
+          }
         }
+      } else {
+        let host = await AsyncStorage.getItem(STORAGE_HOST);
+        Toast.show({
+          title: 'Invalidate Host ' + host,
+          status: 'warning',
+          description: `Host ${host} tidak dapat di aksess, silahkan coba menukarnya dengan alamat host server yang valid`,
+        });
+        this.props.navigation.navigate('HostScreen');
       }
     }
   };

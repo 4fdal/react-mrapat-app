@@ -1,6 +1,8 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Axios from 'axios';
 import Info from 'react-native-device-info';
 import {Authenticate} from '../storage/authenticate';
+import { STORAGE_HOST } from '../storage/keys';
 import {URL_API_GET_BANNER, URL_API_LOGIN} from './keys';
 
 export class Banner {
@@ -29,7 +31,10 @@ export class Banner {
    * @returns banners Promise<Banner>
    */
   static make = async () => {
-    let response = await Axios.get(URL_API_GET_BANNER);
+
+    let host = await AsyncStorage.getItem(STORAGE_HOST);
+
+    let response = await Axios.get(host + URL_API_GET_BANNER);
 
     let {
       data: {

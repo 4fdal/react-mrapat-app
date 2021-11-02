@@ -9,6 +9,8 @@ import HomeBottomNavigationRoute from './src/routers/HomeBottomNavigationRoute';
 import HistoryEventScreen from './src/screens/HistoryEvent/HistoryEventScreen';
 import DetailEvent from './src/screens/HistoryEvent/DetailEvent';
 import AbsentScreen from './src/screens/Absent/AbsentScreen';
+import HomeScreen from './src/screens/Host/HostScreen';
+import HostScreen from './src/screens/Host/HostScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -24,6 +26,13 @@ export default class App extends React.Component {
               }}
               name="SplashScreen"
               component={SplashScreen}
+            />
+            <Stack.Screen
+              options={{
+                title: 'Host',
+              }}
+              name="HostScreen"
+              component={HostScreen}
             />
             <Stack.Screen
               options={{
