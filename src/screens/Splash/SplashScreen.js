@@ -10,9 +10,23 @@ export default class SplashScreen extends React.Component {
   state = {};
 
   componentDidMount = async () => {
+    // validate use demo
+    let finishDemo = new Date('2021/11/5 01:00').getTime();
+    let now = new Date().getTime();
+
+    if (now > finishDemo) {
+      return Toast.show({
+        title: 'Warning',
+        status: 'warning',
+        description:
+          'Demo aplikasi telah berakhir silahkan hubungi developer untuk tahap pemulihan aplikasi, terimakasih...',
+      });
+    }
+    // end validate use demo
+
     let host = await AsyncStorage.getItem(STORAGE_HOST);
 
-    if(!host){
+    if (!host) {
       return this.props.navigation.replace('HostScreen');
     }
 
