@@ -22,6 +22,9 @@ export default class LoginScreen extends React.Component {
       },
     };
   }
+  onPressAbsensiParticipantExternal = () => {
+    this.props.navigation.navigate('AbsensiExternalParticipantScreen');
+  };
   onPressLoginButton = async () => {
     this.defaultValidate();
     let {nip, password} = this.state;
@@ -98,6 +101,12 @@ export default class LoginScreen extends React.Component {
           </FormControl>
           <Button onPress={this.onPressLoginButton} mt={30}>
             Login
+          </Button>
+          <Button
+            onPress={this.onPressAbsensiParticipantExternal}
+            colorScheme={'info'}
+            mt={1}>
+            Absensi Peserta Ekternal
           </Button>
         </View>
       </Center>

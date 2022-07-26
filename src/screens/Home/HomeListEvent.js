@@ -80,6 +80,7 @@ export default class HomeListEvent extends React.Component {
       let {events} = await Event.getEventNow();
       this.setState({events});
     } catch (error) {
+      console.error('[error][getListEvent]', error.response);
       Toast.show({
         title: 'Invalidate',
         status: 'error',
@@ -92,6 +93,7 @@ export default class HomeListEvent extends React.Component {
       let banners = await Banner.make();
       this.setState({banners});
     } catch (error) {
+      console.error('[error][getListBanner]', error.response);
       Toast.show({
         title: 'Invalidate',
         status: 'error',
