@@ -17,22 +17,23 @@ export default class DetailEvent extends React.Component {
   handleNavigationOptions = () => {
     this.props.navigation.setOptions({
       title: 'Detail Absent',
-      headerRight: !this.state.event.status_absensi
-        ? props => (
-            <TouchableOpacity
-              onPress={() =>
-                this.props.navigation.navigate('AbsentScreen', {
-                  event: this.state.event,
-                })
-              }
-              style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Icon name="checkmark" color={colorPrimary} size={24} />
-              <Text fontSize={16} fontWeight="bold" color={colorPrimary}>
-                Absent Rapat
-              </Text>
-            </TouchableOpacity>
-          )
-        : null,
+      headerRight:
+        this.state.event.status_absensi == 0
+          ? props => (
+              <TouchableOpacity
+                onPress={() =>
+                  this.props.navigation.navigate('AbsentScreen', {
+                    event: this.state.event,
+                  })
+                }
+                style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Icon name="checkmark" color={colorPrimary} size={24} />
+                <Text fontSize={16} fontWeight="bold" color={colorPrimary}>
+                  Absent Rapat
+                </Text>
+              </TouchableOpacity>
+            )
+          : null,
     });
   };
   componentDidMount = () => {
