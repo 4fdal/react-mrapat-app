@@ -27,8 +27,10 @@ export default class AbsentScreen extends Component {
     let {id: raker} = this.state.event;
 
     try {
-      await Absent.take(raker, rakerQrcode);
       let {nip, password} = await Authenticate.get();
+
+      await Absent.take(nip, raker, rakerQrcode);
+
       await Login.make({nip, password});
 
       this.props.navigation.replace('HomeBottomNavigationRoute');

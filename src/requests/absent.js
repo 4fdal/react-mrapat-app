@@ -12,12 +12,13 @@ export default class Absent {
     this.data = null;
   }
 
-  static take = async (raker, rakerQrcode) => {
+  static take = async (nip, raker, rakerQrcode) => {
     let phoneKey = Info.getUniqueId();
 
     let {
       data: {data},
     } = await Axios.post(URL_API_TAKE_ABSENT, {
+      nip,
       raker,
       raker_qrcode: rakerQrcode,
       phone_key: phoneKey,

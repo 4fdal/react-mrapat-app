@@ -6,6 +6,7 @@ import {
   Input,
   View,
   WarningOutlineIcon,
+  Spinner,
 } from 'native-base';
 import React from 'react';
 import {Login} from '../../requests/login';
@@ -20,12 +21,15 @@ export default class LoginScreen extends React.Component {
         nip: null,
         password: null,
       },
+      hasWaitingResponse: false,
     };
   }
+  setWaitingResponse = (hasWaitingResponse = true) =>
+    this.setState({hasWaitingResponse});
   onPressAbsensiParticipantExternal = () => {
     this.props.navigation.navigate('AbsensiExternalParticipantScreen');
   };
-  onPressLoginButton = async () => {
+  onPressLoginButton = () => {
     this.defaultValidate();
     let {nip, password} = this.state;
 
@@ -39,21 +43,32 @@ export default class LoginScreen extends React.Component {
       return this.setState({validate});
     }
 
-    try {
-      let login = await Login.make({nip, password});
-      this.props.navigation.replace('HomeBottomNavigationRoute');
-    } catch (error) {
-      let message = error?.response?.data?.msg;
-      if (message) {
-        if (message.length > 0) {
-          Toast.show({
-            title: 'Invalidate',
-            status: 'error',
-            description: Array.isArray(message) ? message.join('\n') : message,
-          });
+    this.setWaitingResponse();
+    Login.make({nip, password})
+      .then(result => {
+        Toast.show({
+          status: 'success',
+          title: 'Login Berhasil',
+        });
+        this.props.navigation.replace('HomeBottomNavigationRoute');
+      })
+      .catch(error => {
+        let message = error?.response?.data?.msg;
+        if (message) {
+          if (message.length > 0) {
+            Toast.show({
+              title: 'Invalidate',
+              status: 'error',
+              description: Array.isArray(message)
+                ? message.join('\n')
+                : message,
+            });
+          }
         }
-      }
-    }
+      })
+      .finally(() => {
+        this.setWaitingResponse(false);
+      });
   };
   defaultValidate = () => {
     this.setState({validate: {nip: null, password: null}});
@@ -99,10 +114,15 @@ export default class LoginScreen extends React.Component {
               </FormControl.ErrorMessage>
             )}
           </FormControl>
-          <Button onPress={this.onPressLoginButton} mt={30}>
+          <Button
+            disabled={this.state.hasWaitingResponse}
+            onPress={this.onPressLoginButton}
+            leftIcon={this.state.hasWaitingResponse && <Spinner size={'sm'} />}
+            mt={30}>
             Login
           </Button>
           <Button
+            disabled={this.state.hasWaitingResponse}
             onPress={this.onPressAbsensiParticipantExternal}
             colorScheme={'info'}
             mt={1}>
