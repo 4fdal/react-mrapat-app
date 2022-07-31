@@ -66,13 +66,34 @@ export default class Absent {
             Toast.show({
               title: 'Perserta rapat telah melakukan absensi sebelumnya',
             });
+
+            formValidate.email = null;
+            formValidate.no_telpon = null;
           }
 
           screen.setState({formValidate});
 
           throw error;
+        } else if (error.response.status == 400) {
+          Toast.show({
+            title: error.response.data.message,
+            status: 'warning',
+          });
+        } else {
+          Toast.show({
+            title: error.response.data.message ?? 'Gagal mengambil absensi',
+            status: 'error',
+          });
         }
+      } else {
+        Toast.show({
+          title: 'Gagal mengambil absent, silahkan periksa kembali id',
+          description: error.message,
+          status: 'error',
+        });
       }
+
+      throw error;
     }
   };
 }
