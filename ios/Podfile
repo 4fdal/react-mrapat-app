@@ -13,6 +13,9 @@ target 'mrapat_app' do
   )
 
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+  pod 'React', :path => '../node_modules/react-native', :subspecs => [
+    'RCTLinkingIOS'
+  ]
 
   target 'mrapat_appTests' do
     inherit! :complete

@@ -13,7 +13,7 @@ import {
   WarningOutlineIcon,
 } from 'native-base';
 import React from 'react';
-import Absent from '../../requests/absent';
+import TakeAbsent from '../../requests/absent';
 
 const KEY_PROFILE_PARTICIPANT = 'profileParticipant';
 
@@ -108,7 +108,7 @@ export default class AbsensiExternalParticipantScreen extends React.Component {
   };
 
   onPressAmbilAbsensi = () => {
-    Absent.takeExternal(this, this.state.form).then(() => {
+    TakeAbsent.takeExternal(this, this.state.form).then(() => {
       Toast.show({
         title: 'Berhasil mengambil absent',
       });
