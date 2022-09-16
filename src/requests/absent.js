@@ -24,7 +24,7 @@ export default class Absent {
       phone_key: phoneKey,
     });
 
-    let absent = new Absent({data, phoneKey, raker, rakerQrcode});
+    return data;
   };
 
   /**

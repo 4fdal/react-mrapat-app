@@ -30,7 +30,7 @@ export default class App extends React.Component {
           }}
           fallback={<Text>Loading...</Text>}>
           <Stack.Navigator>
-            {/* <Stack.Screen
+            <Stack.Screen
               options={{
                 headerShown: false,
               }}
@@ -60,7 +60,7 @@ export default class App extends React.Component {
             <Stack.Screen
               name="AbsensiExternalParticipantScreen"
               component={AbsensiExternalParticipantScreen}
-            /> */}
+            />
             <Stack.Screen
               options={{
                 headerShown: false,

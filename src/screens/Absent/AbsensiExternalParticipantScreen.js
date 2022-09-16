@@ -14,8 +14,7 @@ import {
 } from 'native-base';
 import React from 'react';
 import TakeAbsent from '../../requests/absent';
-
-const KEY_PROFILE_PARTICIPANT = 'profileParticipant';
+import {KEY_PROFILE_PARTICIPANT} from '../../storage/keys';
 
 export default class AbsensiExternalParticipantScreen extends React.Component {
   partialScreen = {
@@ -70,8 +69,20 @@ export default class AbsensiExternalParticipantScreen extends React.Component {
   };
 
   componentDidMount = () => {
+    this.handleGetIdRapatWithParams();
+
     this.props.navigation.setOptions(this.partialScreen);
     this.loadProfileParticipant();
+  };
+
+  handleGetIdRapatWithParams = () => {
+    const id_rapat = this.props?.route?.params?.id_rapat ?? null;
+    if (id_rapat) {
+      let stateScreen = this.state;
+      stateScreen.formDefault.id_rapat = id_rapat;
+      stateScreen.form.id_rapat = id_rapat;
+      this.setState(stateScreen);
+    }
   };
 
   loadProfileParticipant = () => {

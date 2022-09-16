@@ -1,53 +1,39 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {
-  Button,
-  Center,
-  Container,
-  Divider,
-  HStack,
-  ScrollView,
-  Spinner,
-  Text,
-  Toast,
-  View,
-  VStack,
-} from 'native-base';
+import {Button, Divider, Spinner, Text, Toast, View, VStack} from 'native-base';
 import React from 'react';
-import {SafeAreaView} from 'react-native';
-import {
-  colorDanger,
-  colorLight,
-  colorSuccess,
-} from '../../components/styles/color-keys';
+import {colorLight} from '../../components/styles/color-keys';
 import {Login} from '../../requests/login';
 import Meting from '../../requests/meting';
 import {Authenticate} from '../../storage/authenticate';
+import {KEY_PROFILE_PARTICIPANT} from '../../storage/keys';
+import TakeAbsent from '../../requests/absent';
 
 export const STORE_PARAMS_METING_ID = 'store_params_meting_id';
 
 export default class LinkAbsentScreen extends React.Component {
   state = {
     hasLoaded: false,
+    isMetingNotFound: false,
     hasStoredMetingId: false,
     rapat: {},
   };
 
   componentDidMount = () => {
-    this.handleRouteParamsGet().then(() => {
-      // this.handleRequestGetRapat();
-    });
+    this.handleRouteParamsGet().then(this.handleRequestGetRapat);
   };
+
+  getIdRapat = () => this.props?.route?.params?.id_rapat;
 
   handleRouteParamsGet = () => {
     this.setState({hasStoredMetingId: false});
-    const idRapat = this.props?.route?.params?.id_rapat ?? null;
-    return AsyncStorage.setItem(STORE_PARAMS_METING_ID, idRapat).finally(() =>
-      this.setState({hasStoredMetingId: true}),
-    );
+    const idRapat = this.getIdRapat();
+    return AsyncStorage.setItem(STORE_PARAMS_METING_ID, idRapat)
+      .catch(() => this.props.navigation.navigate('SplashScreen'))
+      .finally(() => this.setState({hasStoredMetingId: true}));
   };
 
   handleRequestGetRapat = () => {
-    const idRapat = this.props?.route?.params?.id_rapat;
+    const idRapat = this.getIdRapat();
     this.setState({hasLoaded: false});
     return Meting.get(idRapat)
       .then(
@@ -62,68 +48,125 @@ export default class LinkAbsentScreen extends React.Component {
       .finally(() => this.setState({hasLoaded: true}));
   };
 
-  checkAuthentication = async () => {
-    try {
-      let authenticate = await Authenticate.get();
+  handleAbsentInternal = () => {
+    Authenticate.get()
+      .then(async authenticate => {
+        if (
+          authenticate?.nip &&
+          authenticate?.password &&
+          authenticate?.phoneKey &&
+          authenticate?.data
+        ) {
+          try {
+            let {nip, password} = authenticate;
+            let login = await Login.make({nip, password});
+            if (login?.data?.raker) {
+              const idRapat = this.getIdRapat();
+              const {peserta} = await TakeAbsent.take(nip, idRapat, idRapat);
 
-      if (
-        authenticate?.nip &&
-        authenticate?.password &&
-        authenticate?.phoneKey &&
-        authenticate?.data
-      ) {
-        try {
-          let {nip, password} = authenticate;
-          let login = await Login.make({nip, password});
-          if (login?.data?.raker) {
-            this.props.navigation.replace('HomeBottomNavigationRoute');
-          } else {
+              if (peserta.status_absensi != 1) {
+                Toast.show({
+                  title: `Berhasil mengambil absensi pada rapat '${peserta.raker.nama_raker}' dengan keterangan '${peserta.keterangan_absensi}' pada waktu '${peserta.tanggal_jam_absensi}'`,
+                });
+              } else {
+                Toast.show({
+                  title: `Telah melakukan pengambilan absensi sebelumnya pada rapat '${peserta.raker.nama_raker}' dengan keterangan '${peserta.keterangan_absensi}' pada waktu '${peserta.tanggal_jam_absensi}'`,
+                });
+              }
+
+              await Login.make({nip, password});
+              this.props.navigation.navigate('HomeListEvent', {
+                id_rapat: idRapat,
+              });
+            } else {
+              this.props.navigation.replace('LoginScreen');
+            }
+          } catch (error) {
+            let message = error?.response?.data?.msg;
+            if (message) {
+              if (message.length > 0) {
+                Toast.show({
+                  title: 'Invalidate',
+                  status: 'error',
+                  description: message.join('\n'),
+                });
+              }
+            }
             this.props.navigation.replace('LoginScreen');
           }
-        } catch (error) {
-          let message = error?.response?.data?.msg;
-          if (message) {
-            if (message.length > 0) {
-              Toast.show({
-                title: 'Invalidate',
-                status: 'error',
-                description: message.join('\n'),
-              });
-            }
-          }
+        } else {
+          Toast.show({
+            title:
+              'Data login tidak ditemukan, login akun anda terlebih dahulu',
+            background: 'red.400',
+          });
           this.props.navigation.replace('LoginScreen');
         }
-      } else {
+      })
+      .catch(() => {
         Toast.show({
           title: 'Data login tidak ditemukan, login akun anda terlebih dahulu',
           background: 'red.400',
         });
         this.props.navigation.replace('LoginScreen');
-      }
-    } catch (error) {
-      Toast.show({
-        title: 'Data login tidak ditemukan, login akun anda terlebih dahulu',
-        background: 'red.400',
       });
-      this.props.navigation.replace('LoginScreen');
-    }
+
+    // this.checkAuthentication().then(async () => {
+    //   try {
+    //   } catch (error) {
+    //     Toast.show({
+    //       title:
+    //         'Maaf, terjadi kesalahan dalam pengambilan absent, mohon lakukan pengambilan absent pada tempat anda melaksanakan rapat',
+    //       background: 'red.400',
+    //     });
+    //     this.props.navigation.replace('HomeBottomNavigationRoute');
+    //   }
+    // });
   };
 
-  handleAbsentInternal = () => {
-    this.checkAuthentication().then(async () => {
-      try {
-      } catch (error) {
+  handleAbsentExternal = () => {
+    const redirectToAbsensiExternalParticipantScreen = (message = null) => {
+      if (message)
         Toast.show({
-          title:
-            'Maaf, terjadi kesalahan dalam pengambilan absent, mohon lakukan pengambilan absent pada tempat anda melaksanakan rapat',
+          title: message,
           background: 'red.400',
         });
-        this.props.navigation.replace('HomeBottomNavigationRoute');
-      }
-    });
-  };
+      this.props.navigation.navigate('AbsensiExternalParticipantScreen', {
+        id_rapat: this.getIdRapat(),
+      });
+    };
 
-  handleAbsentExternal = () => {};
+    AsyncStorage.getItem(KEY_PROFILE_PARTICIPANT)
+      .then(profileParticipant => {
+        if (profileParticipant) {
+          profileParticipant = JSON.parse(profileParticipant);
+          if (profileParticipant) {
+            const profile = {
+              id_rapat: this.getIdRapat(),
+              nama_perusahaan: profileParticipant.nama_perusahaan,
+              nama: profileParticipant.nama,
+              jabatan: profileParticipant.jabatan,
+              email: profileParticipant.email,
+              no_telpon: profileParticipant.no_telpon,
+            };
+
+            return TakeAbsent.takeExternal(this, profile).then(() => {
+              Toast.show({
+                title: 'Berhasil mengambil absent',
+              });
+            });
+          }
+        } else {
+          redirectToAbsensiExternalParticipantScreen(
+            'Data absensi untuk peserta rapat external belum lengkap, segera lengkapi terlebih dahulu',
+          );
+        }
+      })
+      .catch(err => {
+        redirectToAbsensiExternalParticipantScreen(err.message);
+      })
+      .finally(() => this.setState({hasLoadedAsyncStorage: true}));
+  };
 
   render = () => {
     return (
