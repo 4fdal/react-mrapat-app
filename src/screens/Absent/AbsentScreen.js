@@ -22,15 +22,17 @@ export default class AbsentScreen extends Component {
     this.handleNavigationOptions();
   };
 
-  onSuccess = async ({data}) => {
-    let {raker: rakerQrcode} = JSON.parse(data);
+  onSuccess = async ({data: appUrl}) => {
+    // appUrl output_ex. mrapatapp://absent/181336
+    const subUrl = 'absent/';
+    const rakerQrcode = appUrl.substring(
+      appUrl.indexOf(subUrl) + subUrl.length,
+    );
     let {id: raker} = this.state.event;
 
     try {
       let {nip, password} = await Authenticate.get();
-
       await Absent.take(nip, raker, rakerQrcode);
-
       await Login.make({nip, password});
 
       this.props.navigation.replace('HomeBottomNavigationRoute');
