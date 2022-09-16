@@ -24,10 +24,7 @@ export default class AbsentScreen extends Component {
 
   onSuccess = async ({data: appUrl}) => {
     // appUrl output_ex. mrapatapp://absent/181336
-    const subUrl = 'absent/';
-    const rakerQrcode = appUrl.substring(
-      appUrl.indexOf(subUrl) + subUrl.length,
-    );
+    const rakerQrcode = appUrl.substring('mrapatapp://absent/'.length);
     let {id: raker} = this.state.event;
 
     try {
