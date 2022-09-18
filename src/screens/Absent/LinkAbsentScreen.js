@@ -7,12 +7,13 @@ import Meting from '../../requests/meting';
 import {Authenticate} from '../../storage/authenticate';
 import {KEY_PROFILE_PARTICIPANT} from '../../storage/keys';
 import TakeAbsent from '../../requests/absent';
+import {Linking, TouchableOpacity} from 'react-native';
 
 export const STORE_PARAMS_METING_ID = 'store_params_meting_id';
 
 export default class LinkAbsentScreen extends React.Component {
   state = {
-    hasLoaded: false,
+    hasLoaded: true,
     isMetingNotFound: false,
     hasStoredMetingId: false,
     rapat: {},
@@ -75,7 +76,7 @@ export default class LinkAbsentScreen extends React.Component {
               }
 
               await Login.make({nip, password});
-              this.props.navigation.navigate('HomeListEvent', {
+              this.props.navigation.navigate('SplashScreen', {
                 id_rapat: idRapat,
               });
             } else {
@@ -192,6 +193,25 @@ export default class LinkAbsentScreen extends React.Component {
                     flexDirection: 'row',
                   }}>
                   <View>
+                    <View style={{flexDirection: 'column'}}>
+                      <Text fontWeight="bold">Tipe Rapat</Text>
+                      <Text fontWeight="light">
+                        {this.state.rapat?.tipe_rapat}
+                      </Text>
+                    </View>
+                    {this.state.rapat?.tipe_rapat != 'offline' ? (
+                      <View style={{flexDirection: 'column'}}>
+                        <Text fontWeight="bold">Link Rapat</Text>
+                        <TouchableOpacity
+                          onPress={() => {
+                            Linking.openURL(this.state.rapat?.link_rapat);
+                          }}>
+                          <Text color={'blue.400'} fontWeight="light">
+                            {this.state.rapat?.link_rapat}
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    ) : null}
                     <View style={{flexDirection: 'column'}}>
                       <Text fontWeight="bold">Mulai Rapat</Text>
                       <Text fontWeight="light">

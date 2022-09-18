@@ -1,7 +1,6 @@
 import Axios from 'axios';
 import {Toast} from 'native-base';
 import Info from 'react-native-device-info';
-import AbsensiExternalParticipantScreen from '../screens/Absent/AbsensiExternalParticipantScreen';
 import {URL_API_TAKE_ABSENT, URL_API_TAKE_ABSENT_EXTERNAL} from './keys';
 
 export default class Absent {

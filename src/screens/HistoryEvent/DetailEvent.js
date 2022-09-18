@@ -1,6 +1,6 @@
-import {Divider, ScrollView, Text} from 'native-base';
+import {Divider, HStack, ScrollView, Text, VStack} from 'native-base';
 import React from 'react';
-import {TouchableOpacity, View} from 'react-native';
+import {Linking, TouchableOpacity, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {
@@ -50,6 +50,8 @@ export default class DetailEvent extends React.Component {
       tanggal_jam_absensi,
       tanggal_jam_keluar_raker,
       tanggal_jam_masuk_raker,
+      tipe_rapat,
+      link_rapat,
       notulen_raker: {
         bidang_pegawai,
         email_pegawai,
@@ -129,6 +131,28 @@ export default class DetailEvent extends React.Component {
                     ) : null}
                   </View>
                 </View>
+
+                <VStack>
+                  <View style={{flexDirection: 'column'}}>
+                    <Text fontWeight="bold">Tipe Rapat</Text>
+                    <Text fontWeight="light">{tipe_rapat}</Text>
+                  </View>
+                  {link_rapat ? (
+                    <View style={{flexDirection: 'column'}}>
+                      <Text fontWeight="bold">Link Rapat</Text>
+                      <TouchableOpacity
+                        onPress={() => {
+                          Linking.openURL(link_rapat);
+                        }}>
+                        <Text color={'blue.400'} fontWeight="light">
+                          {link_rapat}
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  ) : (
+                    <></>
+                  )}
+                </VStack>
               </View>
             </View>
             <View
