@@ -26,9 +26,6 @@ export default class LoginScreen extends React.Component {
   }
   setWaitingResponse = (hasWaitingResponse = true) =>
     this.setState({hasWaitingResponse});
-  onPressAbsensiParticipantExternal = () => {
-    this.props.navigation.navigate('AbsensiExternalParticipantScreen');
-  };
   onPressLoginButton = () => {
     this.defaultValidate();
     let {nip, password} = this.state;
@@ -120,13 +117,6 @@ export default class LoginScreen extends React.Component {
             leftIcon={this.state.hasWaitingResponse && <Spinner size={'sm'} />}
             mt={30}>
             Login
-          </Button>
-          <Button
-            disabled={this.state.hasWaitingResponse}
-            onPress={this.onPressAbsensiParticipantExternal}
-            colorScheme={'info'}
-            mt={1}>
-            Absensi Peserta Ekternal
           </Button>
         </View>
       </Center>

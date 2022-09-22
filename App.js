@@ -9,7 +9,6 @@ import HomeBottomNavigationRoute from './src/routers/HomeBottomNavigationRoute';
 import HistoryEventScreen from './src/screens/HistoryEvent/HistoryEventScreen';
 import DetailEvent from './src/screens/HistoryEvent/DetailEvent';
 import AbsentScreen from './src/screens/Absent/AbsentScreen';
-import AbsensiExternalParticipantScreen from './src/screens/Absent/AbsensiExternalParticipantScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -46,10 +45,6 @@ export default class App extends React.Component {
             />
             <Stack.Screen name="DetailEvent" component={DetailEvent} />
             <Stack.Screen name="AbsentScreen" component={AbsentScreen} />
-            <Stack.Screen
-              name="AbsensiExternalParticipantScreen"
-              component={AbsensiExternalParticipantScreen}
-            />
           </Stack.Navigator>
         </NavigationContainer>
       </NativeBaseProvider>

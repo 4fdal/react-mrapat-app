@@ -26,6 +26,12 @@ export class Login {
     try {
       let phoneKey = Info.getUniqueId();
 
+      console.log(URL_API_LOGIN, {
+        nip,
+        password,
+        phone_key: phoneKey,
+      });
+
       let login = new Login({nip, password});
       login.response = await Axios.post(URL_API_LOGIN, {
         nip,
