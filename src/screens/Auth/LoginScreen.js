@@ -7,9 +7,11 @@ import {
   View,
   WarningOutlineIcon,
   Spinner,
+  Text,
+  Icon,
 } from 'native-base';
 import React from 'react';
-import {Login} from '../../requests/login';
+import { Login } from '../../requests/login';
 
 export default class LoginScreen extends React.Component {
   constructor(props) {
@@ -25,10 +27,10 @@ export default class LoginScreen extends React.Component {
     };
   }
   setWaitingResponse = (hasWaitingResponse = true) =>
-    this.setState({hasWaitingResponse});
+    this.setState({ hasWaitingResponse });
   onPressLoginButton = () => {
     this.defaultValidate();
-    let {nip, password} = this.state;
+    let { nip, password } = this.state;
 
     let validate = {};
     if (nip == null || nip == undefined || nip == '')
@@ -37,11 +39,11 @@ export default class LoginScreen extends React.Component {
       validate.password = 'Data password harus berisi';
 
     if (Object.values(validate).length > 0) {
-      return this.setState({validate});
+      return this.setState({ validate });
     }
 
     this.setWaitingResponse();
-    Login.make({nip, password})
+    Login.make({ nip, password })
       .then(result => {
         Toast.show({
           status: 'success',
@@ -68,7 +70,7 @@ export default class LoginScreen extends React.Component {
       });
   };
   defaultValidate = () => {
-    this.setState({validate: {nip: null, password: null}});
+    this.setState({ validate: { nip: null, password: null } });
   };
   render = () => {
     return (
@@ -87,7 +89,7 @@ export default class LoginScreen extends React.Component {
           <FormControl isInvalid={this.state.validate.nip}>
             <FormControl.Label>Nip Pegawai</FormControl.Label>
             <Input
-              onChangeText={nip => this.setState({nip})}
+              onChangeText={nip => this.setState({ nip })}
               placeholder="Masukan Nip Pegawai"
             />
             {this.state.validate.nip && (
@@ -101,7 +103,7 @@ export default class LoginScreen extends React.Component {
             <FormControl.Label>Password</FormControl.Label>
             <Input
               secureTextEntry={true}
-              onChangeText={password => this.setState({password})}
+              onChangeText={password => this.setState({ password })}
               placeholder="Masukan Password"
             />
             {this.state.validate.password && (
@@ -117,6 +119,12 @@ export default class LoginScreen extends React.Component {
             leftIcon={this.state.hasWaitingResponse && <Spinner size={'sm'} />}
             mt={30}>
             Login
+          </Button>
+        </View>
+
+        <View style={{ marginTop: 40 }} >
+          <Button variant={'link'} onPress={() => this.props.navigation.navigate('SettingScreen')} >
+            Setting
           </Button>
         </View>
       </Center>

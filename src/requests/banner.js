@@ -1,7 +1,10 @@
 import Axios from 'axios';
 import Info from 'react-native-device-info';
-import {Authenticate} from '../storage/authenticate';
-import {URL_API_GET_BANNER, URL_API_LOGIN} from './keys';
+import { Authenticate } from '../storage/authenticate';
+import { URL_API_GET_BANNER, URL_API_LOGIN } from './keys';
+
+import { HOST } from '../../app.config'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export class Banner {
   constructor({
@@ -29,11 +32,14 @@ export class Banner {
    * @returns banners Promise<Banner>
    */
   static make = async () => {
-    let response = await Axios.get(URL_API_GET_BANNER);
+    const baseURL = (await AsyncStorage.getItem('HOST')) ?? HOST;
+    let response = await Axios.get(URL_API_GET_BANNER, {
+      baseURL
+    });
 
     let {
       data: {
-        data: {banner},
+        data: { banner },
       },
     } = response;
 
